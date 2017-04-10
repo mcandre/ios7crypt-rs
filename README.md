@@ -18,6 +18,10 @@ Options:
     -d, --decrypt VAL   decrypt a hash
 ```
 
+# CRATE
+
+https://crates.io/crates/ios7crypt
+
 # REQUIREMENTS
 
 * [Rust](http://www.rust-lang.org/) 1.16.0+
@@ -38,4 +42,10 @@ $ cargo build
 
 ```console
 $ cargo test
+```
+
+# PUBLISH CRATE
+
+```console
+$ cargo publish
 ```
