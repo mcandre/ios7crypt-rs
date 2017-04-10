@@ -10,7 +10,7 @@ $ ios7crypt -d 060b002f474b10
 monkey
 
 $ ios7crypt -h
-Usage: target/debug/ios7crypt [options]
+Usage: ios7crypt [options]
 
 Options:
     -h, --help          print usage info
