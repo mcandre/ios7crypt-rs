@@ -7,7 +7,7 @@ use std::str;
 use std::i64;
 use std::iter::Iterator;
 
-//! Finite IOS7Crypt constant key
+// Finite IOS7Crypt constant key
 pub fn xlat_prime() -> [u8; 53] {
   return [
     0x64, 0x73, 0x66, 0x64, 0x3b, 0x6b, 0x66, 0x6f,
@@ -20,7 +20,7 @@ pub fn xlat_prime() -> [u8; 53] {
   ];
 }
 
-//! Wraparound IOS7Crypt constant key
+// Wraparound IOS7Crypt constant key
 pub fn xlat(i : usize, len : usize) -> Vec<u8> {
   let xs : [u8; 53] = xlat_prime();
   let xs_len : usize = xs.len();
@@ -39,13 +39,13 @@ pub fn xlat(i : usize, len : usize) -> Vec<u8> {
   }
 }
 
-//! Bitwise XOR convenience function
+// Bitwise XOR convenience function
 pub fn xor(tp : (&u8, &u8)) -> u8 {
   let (a, b) : (&u8, &u8) = tp;
   return (*a) ^ (*b);
 }
 
-//! Encode an ASCII password with IOS7Crypt
+// Encode an ASCII password with IOS7Crypt
 pub fn encrypt(password : &str) -> String {
   let mut rng = rand::thread_rng();
 
@@ -68,7 +68,7 @@ pub fn encrypt(password : &str) -> String {
   return format!("{:02}{}", seed, hexdata);
 }
 
-//! Decrypt valid IOS7Crypt hashes
+// Decrypt valid IOS7Crypt hashes
 pub fn decrypt(hash : &str) -> String {
   if hash.len() < 2 {
     return "".to_string();

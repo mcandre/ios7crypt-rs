@@ -8,13 +8,13 @@ use getopts::Options;
 use std::process;
 use std::env;
 
-//! Show short CLI spec
+// Show short CLI spec
 fn usage(brief : &String, opts : &getopts::Options) {
     println!("{}", (*opts).usage(brief));
     process::exit(0);
 }
 
-//! CLI entry point
+// CLI entry point
 fn main() {
   let args : Vec<String> = env::args().collect();
 
