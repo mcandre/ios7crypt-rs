@@ -1,8 +1,11 @@
 [package]
 
 name = "ios7crypt"
+description = "legacy IOS7Crypt encryptor/decryptor"
 version = "0.0.1"
 authors = ["Andrew Pennebaker <andrew.pennebaker@gmail.com>"]
+license = "BSD-2-Clause"
+homepage = "https://github.com/mcandre/ios7crypt-rs"
 
 [dependencies]
 rand = "0.3.15"
