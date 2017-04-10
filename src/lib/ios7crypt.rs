@@ -44,7 +44,7 @@ pub fn xor(tp : (&u8, &u8)) -> u8 {
 pub fn encrypt(password : &str) -> String {
   let mut rng = rand::thread_rng();
 
-  let seed : usize = rng.gen_range(0, 16);
+  let seed = rng.gen_range(0, 16);
 
   let plaintext : &[u8] = password.as_bytes();
 
@@ -58,9 +58,7 @@ pub fn encrypt(password : &str) -> String {
 
   let hexpairs : Vec<String> = ciphertext.iter().map(|cipherbyte| format!("{:02x}", cipherbyte)).collect();
 
-  let hexdata : String = hexpairs.concat();
-
-  return format!("{:02}{}", seed, hexdata);
+  return format!("{:02}{}", seed, hexpairs.concat());
 }
 
 // Decrypt valid IOS7Crypt hashes
@@ -71,7 +69,7 @@ pub fn decrypt(hash : &str) -> String {
   else {
     let (seed_str, hash_str) : (&str, &str) = hash.split_at(2);
 
-    let seed : usize = seed_str.parse().expect("Invalid seed");
+    let seed = seed_str.parse().expect("Invalid seed");
 
     let codepoints : Vec<u8> = String::from(hash_str).bytes().collect();
 
