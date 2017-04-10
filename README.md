@@ -14,6 +14,7 @@ Usage: ios7crypt [options]
 
 Options:
     -h, --help          print usage info
+    -v, --version       print version info
     -e, --encrypt VAL   encrypt a password
     -d, --decrypt VAL   decrypt a hash
 ```

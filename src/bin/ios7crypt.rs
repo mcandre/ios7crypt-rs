@@ -24,6 +24,7 @@ fn main() {
 
   let mut opts : getopts::Options = Options::new();
   opts.optflag("h", "help", "print usage info");
+  opts.optflag("v", "version", "print version info");
   opts.optopt("e", "encrypt", "encrypt a password", "VAL");
   opts.optopt("d", "decrypt", "decrypt a hash", "VAL");
 
@@ -44,6 +45,9 @@ fn main() {
     let hash = optmatches.opt_str("decrypt").unwrap();
 
     println!("{}", ios7crypt::decrypt(&hash));
+  }
+  else if optmatches.opt_present("v") || optmatches.opt_present("version") {
+    println!("{} {}", program, env!("CARGO_PKG_VERSION"));
   }
   else {
     usage(&brief, &opts);
