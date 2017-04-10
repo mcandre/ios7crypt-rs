@@ -10,3 +10,11 @@ homepage = "https://github.com/mcandre/ios7crypt-rs"
 [dependencies]
 rand = "0.3.15"
 getopts = "0.2.14"
+
+[lib]
+name = "ios7crypt"
+path = "src/lib/ios7crypt.rs"
+
+[[bin]]
+name = "ios7crypt"
+path = "src/bin/ios7crypt.rs"
