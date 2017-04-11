@@ -55,7 +55,7 @@ target/debug/ios7crypt: Mach-O 64-bit executable x86_64
 ```console
 $ docker pull mcandre/docker-rustup:x86_64-gnu
 $ docker pull mcandre/docker-rustup:i686-gnu
-$ docker pull ekidd/rust-musl-builder
+$ docker pull mcandre/docker-rustup:x86_64-musl
 
 $ make crosscompile
 
