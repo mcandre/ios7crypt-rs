@@ -7,7 +7,7 @@ use std::u8;
 use std::iter;
 use std::slice;
 
-// Finite IOS7Crypt constant key
+/// Finite IOS7Crypt constant key
 static XLAT_PRIME : [u8; 53] = [
   0x64, 0x73, 0x66, 0x64, 0x3b, 0x6b, 0x66, 0x6f,
   0x41, 0x2c, 0x2e, 0x69, 0x79, 0x65, 0x77, 0x72,
@@ -18,18 +18,18 @@ static XLAT_PRIME : [u8; 53] = [
   0x3b, 0x66, 0x67, 0x38, 0x37
 ];
 
-// Wraparound IOS7Crypt constant key
+/// Wraparound IOS7Crypt constant key
 pub fn xlat<'a>(offset : &'a usize) -> iter::Skip<iter::Cycle<slice::Iter<'a, u8>>> {
   return XLAT_PRIME.iter().cycle().skip(*offset);
 }
 
-// Bitwise XOR convenience function
+/// Bitwise XOR convenience function
 pub fn xor(tp : (u8, &u8)) -> u8 {
   let (a, b) : (u8, &u8) = tp;
   return a ^ (*b);
 }
 
-// Encode an ASCII password with IOS7Crypt
+/// Encode an ASCII password with IOS7Crypt
 pub fn encrypt<R: rand::Rng>(rng : &mut R, password : &str) -> String {
   let seed = rng.gen_range(0, 16);
 
@@ -42,8 +42,8 @@ pub fn encrypt<R: rand::Rng>(rng : &mut R, password : &str) -> String {
   return format!("{:02}{}", seed, hexpairs.concat());
 }
 
-// Attempt to parse an array of ASCII hexadecimal digits
-// to their corresponding numeric values.
+/// Attempt to parse an array of ASCII hexadecimal digits
+/// to their corresponding numeric values.
 fn parse_hex(s : &[u8]) -> Option<u8> {
   return match str::from_utf8(s) {
     Ok(v) => match u8::from_str_radix(v, 16) {
@@ -54,7 +54,7 @@ fn parse_hex(s : &[u8]) -> Option<u8> {
   };
 }
 
-// Decrypt valid IOS7Crypt hashes
+/// Decrypt valid IOS7Crypt hashes
 pub fn decrypt(hash : &str) -> Option<String> {
   if hash.len() < 2 {
     return None
