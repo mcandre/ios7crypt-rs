@@ -19,6 +19,10 @@ Options:
     -d, --decrypt VAL   decrypt a hash
 ```
 
+# DOWNLOADS
+
+https://github.com/mcandre/ios7crypt-rs/releases
+
 # CRATE
 
 https://crates.io/crates/ios7crypt
@@ -58,16 +62,15 @@ $ docker pull mcandre/docker-rustup:i686-gnu
 $ docker pull mcandre/docker-rustup:x86_64-musl
 $ docker pull mcandre/docker-rustup:i686-musl
 
-$ make crosscompile
+$ make port
 
-$ file target/x86_64-unknown-linux-gnu/release/ios7crypt
-target/x86_64-unknown-linux-gnu/release/ios7crypt: ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 2.6.32, BuildID[sha1]=d1cb7423e44172aeb754c827084ffde9edcafe91, not stripped
-$ file target/i686-unknown-linux-gnu/release/ios7crypt
-target/i686-unknown-linux-gnu/release/ios7crypt: ELF 32-bit LSB shared object, Intel 80386, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux.so.2, for GNU/Linux 2.6.32, BuildID[sha1]=6b25444b647e4be87907f4e4a2c983ee3136a4c4, not stripped
-$ file target/x86_64-unknown-linux-musl/release/ios7crypt
-target/x86_64-unknown-linux-musl/release/ios7crypt: ELF 64-bit LSB executable, x86-64, version 1 (GNU/Linux), statically linked, BuildID[sha1]=9b3084a0e50b8d31693b5db7303c04d38e66b9f3, not stripped
-$ file target/i686-unknown-linux-musl/release/ios7crypt
-target/i686-unknown-linux-musl/release/ios7crypt: ELF 32-bit LSB executable, Intel 80386, version 1 (GNU/Linux), statically linked, BuildID[sha1]=51fc0b9738363042e51e4cf333cc46aaab01bac6, not stripped
+$ unzip -tv ios7crypt-*.zip
+Archive:  ios7crypt-0.0.5.zip
+    testing: target/x86_64-unknown-linux-gnu/release/ios7crypt   OK
+    testing: target/i686-unknown-linux-gnu/release/ios7crypt   OK
+    testing: target/x86_64-unknown-linux-musl/release/ios7crypt   OK
+    testing: target/i686-unknown-linux-musl/release/ios7crypt   OK
+No errors detected in compressed data of ios7crypt-0.0.5.zip.
 ```
 
 # UNIT TEST
