@@ -2,6 +2,8 @@
 
 extern crate ios7crypt;
 
+extern crate rand;
+
 extern crate getopts;
 use getopts::Options;
 
@@ -16,6 +18,8 @@ fn usage(brief : &String, opts : &getopts::Options) {
 
 // CLI entry point
 fn main() {
+  let mut rng = rand::thread_rng();
+
   let args : Vec<String> = env::args().collect();
 
   let program : &str = args[0].as_ref();
@@ -39,7 +43,7 @@ fn main() {
   if optmatches.opt_present("e") || optmatches.opt_present("encrypt") {
     let password = optmatches.opt_str("encrypt").unwrap();
 
-    println!("{}", ios7crypt::encrypt(&password));
+    println!("{}", ios7crypt::encrypt(&mut(rng), &password));
   }
   else if optmatches.opt_present("d") || optmatches.opt_present("decrypt") {
     let hash = optmatches.opt_str("decrypt").unwrap();

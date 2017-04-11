@@ -1,7 +1,6 @@
 //! Legacy IOS7Crypt encryptor/decryptor library
 
 extern crate rand;
-use rand::Rng;
 
 use std::str;
 use std::u8;
@@ -31,9 +30,7 @@ pub fn xor(tp : (u8, &u8)) -> u8 {
 }
 
 // Encode an ASCII password with IOS7Crypt
-pub fn encrypt(password : &str) -> String {
-  let mut rng = rand::thread_rng();
-
+pub fn encrypt<R: rand::Rng>(rng : &mut R, password : &str) -> String {
   let seed = rng.gen_range(0, 16);
 
   let hexpairs : Vec<String> = password.bytes()
