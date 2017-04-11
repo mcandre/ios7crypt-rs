@@ -40,12 +40,12 @@ fn main() {
 
   let optmatches : getopts::Matches = optresult.unwrap();
 
-  if optmatches.opt_present("e") || optmatches.opt_present("encrypt") {
+  if optmatches.opt_present("e") {
     let password = optmatches.opt_str("encrypt").unwrap();
 
     println!("{}", ios7crypt::encrypt(&mut(rng), &password));
   }
-  else if optmatches.opt_present("d") || optmatches.opt_present("decrypt") {
+  else if optmatches.opt_present("d") {
     let hash = optmatches.opt_str("decrypt").unwrap();
 
     match ios7crypt::decrypt(&hash) {
@@ -53,9 +53,9 @@ fn main() {
       _ => panic!("Invalid hash")
     };
   }
-  else if optmatches.opt_present("v") || optmatches.opt_present("version") {
+  else if optmatches.opt_present("v") {
     println!("{} {}", program, env!("CARGO_PKG_VERSION"));
+  } else {
+    usage(&brief, &opts);
   }
-
-  usage(&brief, &opts);
 }
