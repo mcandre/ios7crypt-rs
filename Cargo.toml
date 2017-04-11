@@ -6,6 +6,7 @@ version = "0.0.4"
 authors = ["Andrew Pennebaker <andrew.pennebaker@gmail.com>"]
 license = "BSD-2-Clause"
 homepage = "https://github.com/mcandre/ios7crypt-rs"
+documentation = "https://docs.rs/releases/search?query=ios7crypt"
 
 [dependencies]
 rand = "0.3.15"

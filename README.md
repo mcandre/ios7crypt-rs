@@ -23,6 +23,10 @@ Options:
 
 https://crates.io/crates/ios7crypt
 
+# API DOCUMENTATION
+
+https://docs.rs/releases/search?query=ios7crypt
+
 # REQUIREMENTS
 
 * [Rust](http://www.rust-lang.org/) 1.16.0+
