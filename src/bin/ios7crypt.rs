@@ -24,7 +24,7 @@ fn main() {
 
   let program : &str = args[0].as_ref();
 
-  let brief : String = format!("Usage: {} [options]", program);
+  let brief = format!("Usage: {} [options]", program);
 
   let mut opts : getopts::Options = Options::new();
   opts.optflag("h", "help", "print usage info");
