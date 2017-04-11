@@ -62,7 +62,10 @@ pub fn decrypt(hash : &str) -> Option<String> {
 
   let (seed_str, hash_str) : (&str, &str) = hash.split_at(2);
 
-  let seed = seed_str.parse().expect("Invalid seed");
+  let seed = match usize::from_str_radix(seed_str, 10) {
+    Ok(v) => v,
+    _ => return None
+  };
 
   let codepoints : Vec<u8> = String::from(hash_str).bytes().collect();
 
