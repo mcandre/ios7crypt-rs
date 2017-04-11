@@ -31,16 +31,30 @@ https://docs.rs/releases/search?query=ios7crypt
 
 * [Rust](http://www.rust-lang.org/) 1.16.0+
 
-# BUILD AND INSTALL
+# COMPILE AND INSTALL
 
 ```console
 $ cargo install
 ```
 
-# BUILD
+# COMPILE FOR HOST
 
 ```console
 $ cargo build
+
+$ file target/debug/ios7crypt
+target/debug/ios7crypt: Mach-O 64-bit executable x86_64
+```
+
+# CROSS-COMPILE
+
+```console
+$ make crosscompile
+
+$ file target/x86_64-unknown-linux-gnu/release/ios7crypt
+target/x86_64-unknown-linux-gnu/release/ios7crypt: ELF 64-bit LSB shared object, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 2.6.32, BuildID[sha1]=d1cb7423e44172aeb754c827084ffde9edcafe91, not stripped
+$ file target/x86_64-unknown-linux-musl/release/ios7crypt
+target/x86_64-unknown-linux-musl/release/ios7crypt: ELF 64-bit LSB executable, x86-64, version 1 (GNU/Linux), statically linked, BuildID[sha1]=9b3084a0e50b8d31693b5db7303c04d38e66b9f3, not stripped
 ```
 
 # UNIT TEST
