@@ -70,7 +70,8 @@ pub fn decrypt(hash : &str) -> Option<String> {
   let codepoints : Vec<u8> = String::from(hash_str).bytes().collect();
 
   let plainbytes_options : Vec<Option<u8>> = codepoints.chunks(2)
-                                               .map(|hexpair| parse_hex(hexpair)).collect();
+                                                       .map(|hexpair| parse_hex(hexpair))
+                                                       .collect();
 
   if plainbytes_options.iter().any(|plainbyte_option| plainbyte_option.is_none()) {
     return None
