@@ -48,10 +48,14 @@ fn main() {
   else if optmatches.opt_present("d") {
     let hash = optmatches.opt_str("decrypt").unwrap();
 
-    match ios7crypt::decrypt(&hash) {
-      Some(password) => println!("{}", password),
-      _ => panic!("Invalid hash")
-    };
+    let password_option = ios7crypt::decrypt(&hash);
+
+    if password_option.is_none() {
+      println!("Invalid hash");
+      process::exit(1);
+    }
+
+    println!("{}", password_option.unwrap())
   }
   else if optmatches.opt_present("v") {
     println!("{} {}", program, env!("CARGO_PKG_VERSION"));
