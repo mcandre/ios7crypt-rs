@@ -23,4 +23,6 @@ libc="$2"
 
 host_root_src_dir="$(cd "$(dirname "$0")" && pwd)"
 
-docker run -v "${host_root_src_dir}:/src" "mcandre/docker-rustup:${arch}-${libc}" sh -c "cd /src && cargo build --release --target ${arch}-unknown-linux-${libc}"
+docker run -v "${host_root_src_dir}:/src" \
+    "mcandre/docker-rustup:${arch}-${libc}" \
+    sh -c "cd /src && cargo build --release --target ${arch}-unknown-linux-${libc}"
