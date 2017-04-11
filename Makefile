@@ -14,16 +14,16 @@ $(BIN): src/bin/ios7crypt.rs
 	cargo build
 
 target/x86_64-unknown-linux-gnu/release/ios7crypt:
-	sh compile-x86_64-gnu.sh
+	sh crosscompile-linux.sh x86_64 gnu
 
 target/i686-unknown-linux-gnu/release/ios7crypt:
-	sh compile-i686-gnu.sh
+	sh crosscompile-linux.sh i686 gnu
 
 target/x86_64-unknown-linux-musl/release/ios7crypt:
-	sh compile-x86_64-musl.sh
+	sh crosscompile-linux.sh x86_64 musl
 
 target/i686-unknown-linux-musl/release/ios7crypt:
-	sh compile-i686-musl.sh
+	sh crosscompile-linux.sh i686 musl
 
 crosscompile: target/x86_64-unknown-linux-gnu/release/ios7crypt target/i686-unknown-linux-gnu/release/ios7crypt target/x86_64-unknown-linux-musl/release/ios7crypt target/i686-unknown-linux-musl/release/ios7crypt
 
