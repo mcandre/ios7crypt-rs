@@ -4,11 +4,12 @@ extern crate rand;
 use rand::Rng;
 
 use std::str;
-use std::i64;
-use std::iter::Iterator;
+use std::u8;
+use std::iter;
+use std::slice;
 
 // Finite IOS7Crypt constant key
-pub const XLAT_PRIME : [u8; 53] = [
+pub static XLAT_PRIME : [u8; 53] = [
   0x64, 0x73, 0x66, 0x64, 0x3b, 0x6b, 0x66, 0x6f,
   0x41, 0x2c, 0x2e, 0x69, 0x79, 0x65, 0x77, 0x72,
   0x6b, 0x6c, 0x64, 0x4a, 0x4b, 0x44, 0x48, 0x53,
@@ -19,25 +20,14 @@ pub const XLAT_PRIME : [u8; 53] = [
 ];
 
 // Wraparound IOS7Crypt constant key
-pub fn xlat(i : usize, len : usize) -> Vec<u8> {
-  if len < 1 {
-    return Vec::new();
-  }
-  else {
-    let mut head : Vec<u8> = Vec::new();
-    head.push(XLAT_PRIME[i % XLAT_PRIME.len()]);
-
-    let mut tail : Vec<u8> = xlat(i + 1, len - 1);
-
-    head.append(&mut tail);
-    return head;
-  }
+pub fn xlat<'a>(offset : &'a usize) -> iter::Skip<iter::Cycle<slice::Iter<'a, u8>>> {
+  return XLAT_PRIME.iter().cycle().skip(*offset);
 }
 
 // Bitwise XOR convenience function
-pub fn xor(tp : (&u8, &u8)) -> u8 {
-  let (a, b) : (&u8, &u8) = tp;
-  return (*a) ^ (*b);
+pub fn xor(tp : (u8, &u8)) -> u8 {
+  let (a, b) : (u8, &u8) = tp;
+  return a ^ (*b);
 }
 
 // Encode an ASCII password with IOS7Crypt
@@ -46,19 +36,27 @@ pub fn encrypt(password : &str) -> String {
 
   let seed = rng.gen_range(0, 16);
 
-  let plaintext : &[u8] = password.as_bytes();
+  let plaintext : str::Bytes = password.bytes();
 
-  let keys : Vec<u8> = xlat(seed, password.len());
+  let keys : iter::Skip<iter::Cycle<slice::Iter<u8>>> = xlat(&seed);
 
-  assert_eq!(plaintext.len(), keys.len());
+  let zipped : iter::Zip<str::Bytes, iter::Skip<iter::Cycle<slice::Iter<u8>>>> = plaintext.zip(keys);
 
-  let zipped : Vec<(&u8, &u8)> = plaintext.iter().zip(keys.iter()).collect();
-
-  let ciphertext : Vec<u8> = zipped.iter().map(|pair| xor(*pair)).collect();
+  let ciphertext : Vec<u8> = zipped.map(|pair| xor(pair)).collect();
 
   let hexpairs : Vec<String> = ciphertext.iter().map(|cipherbyte| format!("{:02x}", cipherbyte)).collect();
 
   return format!("{:02}{}", seed, hexpairs.concat());
+}
+
+pub fn parse_hex(s : &[u8]) -> u8 {
+  match str::from_utf8(s) {
+    Ok(v) => match u8::from_str_radix(v, 16) {
+      Ok(w) => return w,
+      Err(err) => panic!(err)
+    },
+    Err(err) => panic!(err)
+  };
 }
 
 // Decrypt valid IOS7Crypt hashes
@@ -73,25 +71,17 @@ pub fn decrypt(hash : &str) -> String {
 
     let codepoints : Vec<u8> = String::from(hash_str).bytes().collect();
 
-    let hexpairs : Vec<&[u8]> = codepoints.chunks(2).collect();
+    let hexpairs : slice::Chunks<u8> = codepoints.chunks(2);
 
-    let ciphertext : Vec<u8> = hexpairs.iter().map(|hexpair| match str::from_utf8(*hexpair) {
-      Ok(v) => match i64::from_str_radix(v, 16) {
-        Ok(w) => w as u8,
-        Err(err) => panic!(err)
-      },
-      Err(err) => panic!(err)
-    }).collect();
+    let ciphertext : iter::Map<slice::Chunks<u8>, _> = hexpairs.map(|hexpair| parse_hex(hexpair));
 
-    let keys : Vec<u8> = xlat(seed, ciphertext.len());
+    let keys : iter::Skip<iter::Cycle<slice::Iter<u8>>> = xlat(&seed);
 
-    assert_eq!(ciphertext.len(), keys.len());
+    let zipped : iter::Zip<iter::Map<slice::Chunks<u8>, _>, iter::Skip<iter::Cycle<slice::Iter<u8>>>> = ciphertext.zip(keys);
 
-    let zipped : Vec<(&u8, &u8)> = ciphertext.iter().zip(keys.iter()).collect();
+    let plainbytes : iter::Map<_, _> = zipped.map(|pair| xor(pair));
 
-    let plainbytes : Vec<u8> = zipped.iter().map(|pair| xor(*pair)).collect();
-
-    match String::from_utf8(plainbytes) {
+    match String::from_utf8(plainbytes.collect()) {
       Ok(password) => return password,
       Err(err) => panic!(err)
     };
