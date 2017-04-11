@@ -42,6 +42,8 @@ pub fn encrypt<R: rand::Rng>(rng : &mut R, password : &str) -> String {
   return format!("{:02}{}", seed, hexpairs.concat());
 }
 
+// Attempt to parse an array of ASCII hexadecimal digits
+// to their corresponding numeric values.
 pub fn parse_hex(s : &[u8]) -> u8 {
   match str::from_utf8(s) {
     Ok(v) => match u8::from_str_radix(v, 16) {
