@@ -56,7 +56,6 @@ fn main() {
   else if optmatches.opt_present("v") || optmatches.opt_present("version") {
     println!("{} {}", program, env!("CARGO_PKG_VERSION"));
   }
-  else {
-    usage(&brief, &opts);
-  }
+
+  usage(&brief, &opts);
 }
