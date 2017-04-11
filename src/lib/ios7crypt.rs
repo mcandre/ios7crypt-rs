@@ -44,13 +44,13 @@ pub fn encrypt<R: rand::Rng>(rng : &mut R, password : &str) -> String {
 
 // Attempt to parse an array of ASCII hexadecimal digits
 // to their corresponding numeric values.
-pub fn parse_hex(s : &[u8]) -> u8 {
-  match str::from_utf8(s) {
+fn parse_hex(s : &[u8]) -> Option<u8> {
+  return match str::from_utf8(s) {
     Ok(v) => match u8::from_str_radix(v, 16) {
-      Ok(w) => return w,
-      Err(err) => panic!(err)
+      Ok(w) => Some(w),
+      Err(_) => None
     },
-    Err(err) => panic!(err)
+    Err(_) => None
   };
 }
 
@@ -69,10 +69,17 @@ pub fn decrypt(hash : &str) -> Option<String> {
 
   let codepoints : Vec<u8> = String::from(hash_str).bytes().collect();
 
-  let plainbytes : iter::Map<_, _> = codepoints.chunks(2)
-                                               .map(|hexpair| parse_hex(hexpair))
-                                               .zip(xlat(&seed))
-                                               .map(|pair| xor(pair));
+  let plainbytes_options : Vec<Option<u8>> = codepoints.chunks(2)
+                                               .map(|hexpair| parse_hex(hexpair)).collect();
+
+  if plainbytes_options.iter().any(|plainbyte_option| plainbyte_option.is_none()) {
+    return None
+  }
+
+  let plainbytes : iter::Map<_, _> = plainbytes_options.iter()
+                                              .map(|plainbytes_option| plainbytes_option.unwrap())
+                                              .zip(xlat(&seed))
+                                              .map(|pair| xor(pair));
 
   return match String::from_utf8(plainbytes.collect()) {
     Ok(password) => Some(password),
