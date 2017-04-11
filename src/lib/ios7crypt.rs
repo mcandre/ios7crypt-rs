@@ -36,15 +36,11 @@ pub fn encrypt(password : &str) -> String {
 
   let seed = rng.gen_range(0, 16);
 
-  let plaintext : str::Bytes = password.bytes();
-
-  let keys : iter::Skip<_> = xlat(&seed);
-
-  let zipped : iter::Zip<_, _> = plaintext.zip(keys);
-
-  let ciphertext : iter::Map<_, _> = zipped.map(|pair| xor(pair));
-
-  let hexpairs : Vec<String> = ciphertext.map(|cipherbyte| format!("{:02x}", cipherbyte)).collect();
+  let hexpairs : Vec<String> = password.bytes()
+                                       .zip(xlat(&seed))
+                                       .map(|pair| xor(pair))
+                                       .map(|cipherbyte| format!("{:02x}", cipherbyte))
+                                       .collect();
 
   return format!("{:02}{}", seed, hexpairs.concat());
 }
@@ -64,24 +60,22 @@ pub fn decrypt(hash : &str) -> String {
   if hash.len() < 2 {
     return "".to_string();
   }
-  else {
-    let (seed_str, hash_str) : (&str, &str) = hash.split_at(2);
 
-    let seed = seed_str.parse().expect("Invalid seed");
+  let (seed_str, hash_str) : (&str, &str) = hash.split_at(2);
 
-    let codepoints : Vec<u8> = String::from(hash_str).bytes().collect();
+  let seed = seed_str.parse().expect("Invalid seed");
 
-    let hexpairs : slice::Chunks<u8> = codepoints.chunks(2);
+  let codepoints : Vec<u8> = String::from(hash_str).bytes().collect();
 
-    let plainbytes : iter::Map<_, _> = hexpairs.map(|hexpair| parse_hex(hexpair))
+  let plainbytes : iter::Map<_, _> = codepoints.chunks(2)
+                                               .map(|hexpair| parse_hex(hexpair))
                                                .zip(xlat(&seed))
                                                .map(|pair| xor(pair));
 
-    match String::from_utf8(plainbytes.collect()) {
-      Ok(password) => return password,
-      Err(err) => panic!(err)
-    };
-  }
+  match String::from_utf8(plainbytes.collect()) {
+    Ok(password) => return password,
+    Err(err) => panic!(err)
+  };
 }
 
 #[test]
