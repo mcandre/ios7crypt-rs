@@ -38,13 +38,13 @@ pub fn encrypt(password : &str) -> String {
 
   let plaintext : str::Bytes = password.bytes();
 
-  let keys : iter::Skip<iter::Cycle<slice::Iter<u8>>> = xlat(&seed);
+  let keys : iter::Skip<_> = xlat(&seed);
 
-  let zipped : iter::Zip<str::Bytes, iter::Skip<iter::Cycle<slice::Iter<u8>>>> = plaintext.zip(keys);
+  let zipped : iter::Zip<_, _> = plaintext.zip(keys);
 
-  let ciphertext : Vec<u8> = zipped.map(|pair| xor(pair)).collect();
+  let ciphertext : iter::Map<_, _> = zipped.map(|pair| xor(pair));
 
-  let hexpairs : Vec<String> = ciphertext.iter().map(|cipherbyte| format!("{:02x}", cipherbyte)).collect();
+  let hexpairs : Vec<String> = ciphertext.map(|cipherbyte| format!("{:02x}", cipherbyte)).collect();
 
   return format!("{:02}{}", seed, hexpairs.concat());
 }
@@ -73,13 +73,9 @@ pub fn decrypt(hash : &str) -> String {
 
     let hexpairs : slice::Chunks<u8> = codepoints.chunks(2);
 
-    let ciphertext : iter::Map<slice::Chunks<u8>, _> = hexpairs.map(|hexpair| parse_hex(hexpair));
-
-    let keys : iter::Skip<iter::Cycle<slice::Iter<u8>>> = xlat(&seed);
-
-    let zipped : iter::Zip<iter::Map<slice::Chunks<u8>, _>, iter::Skip<iter::Cycle<slice::Iter<u8>>>> = ciphertext.zip(keys);
-
-    let plainbytes : iter::Map<_, _> = zipped.map(|pair| xor(pair));
+    let plainbytes : iter::Map<_, _> = hexpairs.map(|hexpair| parse_hex(hexpair))
+                                               .zip(xlat(&seed))
+                                               .map(|pair| xor(pair));
 
     match String::from_utf8(plainbytes.collect()) {
       Ok(password) => return password,
