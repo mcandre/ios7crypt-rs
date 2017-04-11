@@ -55,9 +55,9 @@ pub fn parse_hex(s : &[u8]) -> u8 {
 }
 
 // Decrypt valid IOS7Crypt hashes
-pub fn decrypt(hash : &str) -> String {
+pub fn decrypt(hash : &str) -> Option<String> {
   if hash.len() < 2 {
-    return "".to_string();
+    return None
   }
 
   let (seed_str, hash_str) : (&str, &str) = hash.split_at(2);
@@ -71,13 +71,13 @@ pub fn decrypt(hash : &str) -> String {
                                                .zip(xlat(&seed))
                                                .map(|pair| xor(pair));
 
-  match String::from_utf8(plainbytes.collect()) {
-    Ok(password) => return password,
-    Err(err) => panic!(err)
+  return match String::from_utf8(plainbytes.collect()) {
+    Ok(password) => Some(password),
+    _ => None
   };
 }
 
 #[test]
 fn smoketest() {
-  assert_eq!(decrypt("1308181c00091d"), "monkey");
+  assert_eq!(decrypt("1308181c00091d"), Some("monkey".to_string()));
 }
