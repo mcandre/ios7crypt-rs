@@ -81,10 +81,7 @@ pub fn decrypt(hash : &str) -> Option<String> {
                                               .zip(xlat(&seed))
                                               .map(|pair| xor(pair));
 
-  return match String::from_utf8(plainbytes.collect()) {
-    Ok(password) => Some(password),
-    _ => None
-  };
+  return String::from_utf8(plainbytes.collect()).ok();
 }
 
 #[test]
