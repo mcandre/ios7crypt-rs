@@ -23,19 +23,13 @@ pub fn xlat<'a>(offset : &'a usize) -> iter::Skip<iter::Cycle<slice::Iter<'a, u8
   return XLAT_PRIME.iter().cycle().skip(*offset);
 }
 
-/// Bitwise XOR convenience function
-pub fn xor(tp : (u8, &u8)) -> u8 {
-  let (a, b) : (u8, &u8) = tp;
-  return a ^ (*b);
-}
-
 /// Encode an ASCII password with IOS7Crypt
 pub fn encrypt<R: rand::Rng>(rng : &mut R, password : &str) -> String {
   let seed = rng.gen_range(0, 16);
 
   let hexpairs : Vec<String> = password.bytes()
-                                       .zip(xlat(&seed))
-                                       .map(|pair| xor(pair))
+                                       .zip(xlat(&seed).map(|key| *key))
+                                       .map(|(x, y)| x ^ y)
                                        .map(|cipherbyte| format!("{:02x}", cipherbyte))
                                        .collect();
 
@@ -78,8 +72,8 @@ pub fn decrypt(hash : &str) -> Option<String> {
 
   let plainbytes : iter::Map<_, _> = plainbytes_options.iter()
                                               .map(|plainbytes_option| plainbytes_option.unwrap())
-                                              .zip(xlat(&seed))
-                                              .map(|pair| xor(pair));
+                                              .zip(xlat(&seed).map(|key| *key))
+                                              .map(|(x, y)| x ^ y);
 
   return String::from_utf8(plainbytes.collect()).ok();
 }
