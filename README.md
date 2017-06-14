@@ -38,6 +38,8 @@ https://docs.rs/releases/search?query=ios7crypt
 ## Optional
 
 * [Docker](https://www.docker.com)
+* [editorconfig-cli](https://github.com/amyboyd/editorconfig-cli) (e.g. `go get github.com/amyboyd/editorconfig-cli`)
+* [flcl](https://github.com/mcandre/flcl) (e.g. `go get github.com/mcandre/flcl/...`)
 
 # COMPILE AND INSTALL
 

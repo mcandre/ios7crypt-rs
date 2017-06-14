@@ -34,3 +34,8 @@ port: ios7crypt-$(VERSION).zip
 
 clean:
 	-rm -rf target
+
+editorconfig:
+	flcl . | xargs -n 100 editorconfig-cli check
+
+lint: editorconfig
