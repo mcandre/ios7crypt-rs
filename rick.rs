@@ -142,6 +142,7 @@ tinyrick::wubba_lubba_dub_dub!(
   integration_test,
   port,
   publish,
+  clean_archives,
   clean_cargo,
   clean
 );
