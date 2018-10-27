@@ -9,13 +9,13 @@ ios7crypt's own compilation process is compatible with standard cargo. We wrap s
 * [coreutils](https://www.gnu.org/software/coreutils/coreutils.html)
 * [Docker](https://www.docker.com/)
 
-# INSTALL FROM LOCAL SOURCE
+# INSTALL ARTIFACTS FROM LOCAL SOURCE
 
 ```console
 $ tinyrick install
 ```
 
-# UNINSTALL
+# UNINSTALL ARTIFACTS
 
 ```console
 $ tinyrick uninstall
