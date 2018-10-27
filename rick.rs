@@ -30,12 +30,17 @@ fn doc() {
   tinyrick::exec!("cargo", &["doc"]);
 }
 
-/// Install project
-fn install() {
+/// Install applications
+fn install_binaries() {
   tinyrick::exec!("cargo", &["install", "--force", "--path", "."]);
 }
 
-/// Uninstall project
+/// Install artifacts
+fn install() {
+  tinyrick::deps(install_binaries);
+}
+
+/// Uninstall artifacts
 fn uninstall() {
   tinyrick::exec!("cargo", &["uninstall"]);
 }
@@ -127,6 +132,7 @@ tinyrick::wubba_lubba_dub_dub!(
   lint,
   build,
   doc,
+  install_binaries,
   install,
   uninstall,
   unit_test,
