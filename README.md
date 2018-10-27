@@ -31,58 +31,10 @@ https://crates.io/crates/ios7crypt
 
 https://docs.rs/releases/search?query=ios7crypt
 
-# REQUIREMENTS
+# RUNTIME REQUIREMENTS
 
-* [Rust](http://www.rust-lang.org/) 1.16.0+
+(None)
 
-## Optional
+# CONTRIBUTING
 
-* [Docker](https://www.docker.com)
-* [editorconfig-cli](https://github.com/amyboyd/editorconfig-cli) (e.g. `go get github.com/amyboyd/editorconfig-cli`)
-* [flcl](https://github.com/mcandre/flcl) (e.g. `go get github.com/mcandre/flcl/...`)
-
-# COMPILE AND INSTALL
-
-```console
-$ cargo install
-```
-
-# COMPILE FOR HOST
-
-```console
-$ cargo build
-
-$ file target/debug/ios7crypt
-target/debug/ios7crypt: Mach-O 64-bit executable x86_64
-```
-
-# CROSS-COMPILE
-
-```console
-$ docker pull mcandre/docker-rustup:x86_64-gnu
-$ docker pull mcandre/docker-rustup:i686-gnu
-$ docker pull mcandre/docker-rustup:x86_64-musl
-$ docker pull mcandre/docker-rustup:i686-musl
-
-$ make port
-
-$ unzip -tv ios7crypt-*.zip
-Archive:  ios7crypt-0.0.5.zip
-    testing: target/x86_64-unknown-linux-gnu/release/ios7crypt   OK
-    testing: target/i686-unknown-linux-gnu/release/ios7crypt   OK
-    testing: target/x86_64-unknown-linux-musl/release/ios7crypt   OK
-    testing: target/i686-unknown-linux-musl/release/ios7crypt   OK
-No errors detected in compressed data of ios7crypt-0.0.5.zip.
-```
-
-# UNIT TEST
-
-```console
-$ cargo test
-```
-
-# PUBLISH CRATE
-
-```console
-$ cargo publish
-```
+For more details on developing ios7crypt itself, see [DEVELOPMENT.md](DEVELOPMENT.md).

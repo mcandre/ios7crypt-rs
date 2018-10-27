@@ -10,7 +10,13 @@ documentation = "https://docs.rs/releases/search?query=ios7crypt"
 
 [dependencies]
 rand = "0.3.15"
-getopts = "0.2.14"
+getopts = "0.2.18"
+tinyrick = { version = "0.0.4", optional = true }
+zip = { version = "0.4.2", optional = true }
+glob = { version = "0.2.11", optional = true }
+
+[features]
+letmeout = ["tinyrick", "zip", "glob"]
 
 [lib]
 name = "ios7crypt"
@@ -19,3 +25,8 @@ path = "src/lib/ios7crypt.rs"
 [[bin]]
 name = "ios7crypt"
 path = "src/bin/ios7crypt.rs"
+
+[[bin]]
+name = "rick"
+path = "rick.rs"
+required-features = ["letmeout"]
