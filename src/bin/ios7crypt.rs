@@ -13,7 +13,6 @@ use std::env;
 // Show short CLI spec
 fn usage(brief : &String, opts : &getopts::Options) {
     println!("{}", (*opts).usage(brief));
-    process::exit(0);
 }
 
 // CLI entry point
@@ -36,6 +35,7 @@ fn main() {
 
   if optresult.is_err() {
     usage(&brief, &opts);
+    process::abort();
   }
 
   let optmatches : getopts::Matches = optresult.unwrap();
@@ -52,14 +52,18 @@ fn main() {
 
     if password_option.is_none() {
       println!("Invalid hash");
-      process::exit(1);
+      process::abort();
     }
 
     println!("{}", password_option.unwrap())
   }
   else if optmatches.opt_present("v") {
     println!("{} {}", program, env!("CARGO_PKG_VERSION"));
+  } else if optmatches.opt_present("h") {
+    usage(&brief, &opts);
+    process::exit(0);
   } else {
     usage(&brief, &opts);
+    process::abort();
   }
 }

@@ -1,6 +1,7 @@
 //! Build configuration
 
 extern crate tinyrick;
+extern crate tinyrick_extras;
 extern crate zip;
 extern crate glob;
 
@@ -8,11 +9,12 @@ use std::io;
 use std::fs;
 use std::path;
 
-static VERSION : &str = "0.0.5";
+static PROJECT : &str = env!("CARGO_PKG_NAME");
+static VERSION : &str = env!("CARGO_PKG_VERSION");
 
 /// Run clippy
 fn clippy() {
-  tinyrick::exec!("cargo", &["clippy"]);
+  tinyrick_extras::clippy();
 }
 
 /// Run linters
@@ -22,17 +24,17 @@ fn lint() {
 
 /// Compile project
 fn build() {
-  tinyrick::exec!("cargo", &["build"]);
+  tinyrick_extras::build();
 }
 
 /// Generate documentation
 fn doc() {
-  tinyrick::exec!("cargo", &["doc"]);
+  tinyrick_extras::doc();
 }
 
 /// Install applications
 fn install_binaries() {
-  tinyrick::exec!("cargo", &["install", "--force", "--path", "."]);
+  tinyrick_extras::install_binaries();
 }
 
 /// Install artifacts
@@ -42,12 +44,12 @@ fn install() {
 
 /// Uninstall artifacts
 fn uninstall() {
-  tinyrick::exec!("cargo", &["uninstall"]);
+  tinyrick_extras::uninstall();
 }
 
 /// Run unit tests
 fn unit_test() {
-  tinyrick::exec!("cargo", &["test"]);
+  tinyrick_extras::unit_test();
 }
 
 /// Run integration tests
@@ -56,6 +58,7 @@ fn integration_test() {
 
   tinyrick::exec!("ios7crypt", &["-e", "monkey"]);
   assert!(tinyrick::exec_stdout_utf8!("ios7crypt", &["-d", "060b002f474b10"]) == "monkey\n");
+  assert!(!tinyrick::exec_status!("ios7crypt").success());
 }
 
 /// Run all tests
@@ -75,7 +78,7 @@ fn port() {
     }
   }
 
-  let archive_path : &str = &format!("ios7crypt-{}.zip", VERSION);
+  let archive_path : &str = &format!("{}-{}.zip", PROJECT, VERSION);
 
   let zip_file : fs::File = fs::File::create(archive_path).unwrap();
 
@@ -105,7 +108,7 @@ fn port() {
 
 /// Publish to crate repository
 fn publish() {
-  tinyrick::exec!("cargo", &["publish"]);
+  tinyrick_extras::publish();
 }
 
 /// Delete archives
@@ -117,7 +120,7 @@ fn clean_archives() {
 
 /// Run cargo clean
 fn clean_cargo() {
-  tinyrick::exec!("cargo", &["clean"]);
+  tinyrick_extras::clean_cargo();
 }
 
 /// Clean workspaces
