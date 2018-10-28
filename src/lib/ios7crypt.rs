@@ -2,6 +2,9 @@
 
 extern crate rand;
 
+#[cfg(test)]
+extern crate quickcheck;
+
 use std::str;
 use std::u8;
 use std::iter;
@@ -23,17 +26,23 @@ pub fn xlat<'a>(offset : &'a usize) -> iter::Skip<iter::Cycle<slice::Iter<'a, u8
   return XLAT_PRIME.iter().cycle().skip(*offset);
 }
 
-/// Encode an ASCII password with IOS7Crypt
+/// Encrypt an ASCII password with IOS7Crypt using a given seed
+pub fn encrypt_with_seed(seed : usize, password : &str) -> String {
+  let hexpairs : Vec<String> = password
+    .bytes()
+    .zip(xlat(&seed).map(|key| *key))
+    .map(|(x, y)| x ^ y)
+    .map(|cipherbyte| format!("{:02x}", cipherbyte))
+    .collect();
+
+  format!("{:02}{}", seed, hexpairs.concat())
+}
+
+/// Encode an ASCII password with IOS7Crypt using a random seed
 pub fn encrypt<R: rand::Rng>(rng : &mut R, password : &str) -> String {
   let seed = rng.gen_range(0, 16);
 
-  let hexpairs : Vec<String> = password.bytes()
-                                       .zip(xlat(&seed).map(|key| *key))
-                                       .map(|(x, y)| x ^ y)
-                                       .map(|cipherbyte| format!("{:02x}", cipherbyte))
-                                       .collect();
-
-  return format!("{:02}{}", seed, hexpairs.concat());
+  encrypt_with_seed(seed, password)
 }
 
 /// Attempt to parse an array of ASCII hexadecimal digits
@@ -78,7 +87,15 @@ pub fn decrypt(hash : &str) -> Option<String> {
   return String::from_utf8(plainbytes.collect()).ok();
 }
 
+/// Check whether IOS7Crypt is symmetric
+#[cfg(test)]
+static PROP_REVERSIBLE : fn(usize, String) -> bool = |seed, password| {
+  decrypt(&encrypt_with_seed(seed, &password)).unwrap() == password
+};
+
 #[test]
 fn smoketest() {
   assert_eq!(decrypt("1308181c00091d"), Some("monkey".to_string()));
+
+  quickcheck::quickcheck(PROP_REVERSIBLE)
 }
