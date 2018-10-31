@@ -22,15 +22,18 @@ static XLAT_PRIME : [u8; 53] = [
 ];
 
 /// Wraparound IOS7Crypt constant key
-pub fn xlat<'a>(offset : &'a usize) -> iter::Skip<iter::Cycle<slice::Iter<'a, u8>>> {
-  return XLAT_PRIME.iter().cycle().skip(*offset);
+pub fn xlat<'a>(offset : usize) -> iter::Skip<iter::Cycle<slice::Iter<'a, u8>>> {
+  XLAT_PRIME
+    .iter()
+    .cycle()
+    .skip(offset)
 }
 
 /// Encrypt an ASCII password with IOS7Crypt using a given seed
 pub fn encrypt_with_seed(seed : usize, password : &str) -> String {
   let hexpairs : Vec<String> = password
     .bytes()
-    .zip(xlat(&seed).map(|key| *key))
+    .zip(xlat(seed))
     .map(|(x, y)| x ^ y)
     .map(|cipherbyte| format!("{:02x}", cipherbyte))
     .collect();
@@ -48,13 +51,13 @@ pub fn encrypt<R: rand::Rng>(rng : &mut R, password : &str) -> String {
 /// Attempt to parse an array of ASCII hexadecimal digits
 /// to their corresponding numeric values.
 fn parse_hex(s : &[u8]) -> Option<u8> {
-  return match str::from_utf8(s) {
+  match str::from_utf8(s) {
     Ok(v) => match u8::from_str_radix(v, 16) {
       Ok(w) => Some(w),
       Err(_) => None
     },
     Err(_) => None
-  };
+  }
 }
 
 /// Decrypt valid IOS7Crypt hashes
@@ -70,21 +73,24 @@ pub fn decrypt(hash : &str) -> Option<String> {
     _ => return None
   };
 
-  let plainbytes_options : Vec<Option<u8>> = hash_str.as_bytes()
-                                                     .chunks(2)
-                                                     .map(|hexpair| parse_hex(hexpair))
-                                                     .collect();
+  let plainbytes_options : Vec<Option<u8>> = hash_str
+    .as_bytes()
+    .chunks(2)
+    .map(|hexpair| parse_hex(hexpair))
+    .collect();
 
   if plainbytes_options.iter().any(|plainbyte_option| plainbyte_option.is_none()) {
     return None
   }
 
-  let plainbytes : iter::Map<_, _> = plainbytes_options.iter()
-                                              .map(|plainbytes_option| plainbytes_option.unwrap())
-                                              .zip(xlat(&seed).map(|key| *key))
-                                              .map(|(x, y)| x ^ y);
+  let plainbytes : iter::Map<_, _> = plainbytes_options
+    .iter()
+    .map(|plainbytes_option| plainbytes_option.unwrap())
+    .zip(xlat(seed))
+    .map(|(x, y)| x ^ y);
 
-  return String::from_utf8(plainbytes.collect()).ok();
+  String::from_utf8(plainbytes.collect())
+    .ok()
 }
 
 /// Check whether IOS7Crypt is symmetric

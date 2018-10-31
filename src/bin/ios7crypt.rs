@@ -11,7 +11,7 @@ use std::process;
 use std::env;
 
 // Show short CLI spec
-fn usage(brief : &String, opts : &getopts::Options) {
+fn usage(brief : &str, opts : &getopts::Options) {
     println!("{}", (*opts).usage(brief));
 }
 

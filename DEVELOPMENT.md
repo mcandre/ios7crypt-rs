@@ -5,53 +5,33 @@ ios7crypt's own compilation process is compatible with standard cargo. We wrap s
 # BUILDTIME REQUIREMENTS
 
 * [Rust](https://www.rust-lang.org/en-US/) 1.30+
+
+## Recommended
+
 * [clippy](https://github.com/rust-lang-nursery/rust-clippy)
+* [tinyrick](https://github.com/mcandre/tinyrick) (e.g., `cargo install tinyrick`)
 * [coreutils](https://www.gnu.org/software/coreutils/coreutils.html)
 * [Docker](https://www.docker.com/)
 
-# INSTALL ARTIFACTS FROM LOCAL SOURCE
+# INSTALL BINARIES FROM SOURCE
 
 ```console
 $ tinyrick install
 ```
 
-# UNINSTALL ARTIFACTS
+# UNINSTALL BINARIES
 
 ```console
 $ tinyrick uninstall
 ```
 
-# LINT
+# BUILD: Doc, Lint, Test, and Compile
 
 ```console
-$ tinyrick lint
+$ tinyrick [build]
 ```
 
-# RUN ALL TESTS
-
-```console
-$ tinyrick test
-```
-
-# UNIT TEST
-
-```console
-$ tinyrick unit_test
-```
-
-# INTEGRATION TEST
-
-```console
-$ tinyrick integration_test
-```
-
-# GENERATE DOCUMENTATION
-
-```console
-$ tinyrick doc
-```
-
-# GENERATE PORTS
+# PORT
 
 ```console
 $ tinyrick port

@@ -9,62 +9,48 @@ use std::io;
 use std::fs;
 use std::path;
 
-static PROJECT : &str = env!("CARGO_PKG_NAME");
-static VERSION : &str = env!("CARGO_PKG_VERSION");
+/// Generate documentation
+fn doc() {
+  tinyrick_extras::doc();
+}
 
 /// Run clippy
 fn clippy() {
   tinyrick_extras::clippy();
 }
 
-/// Run linters
+/// Validate documentation and run linters
 fn lint() {
+  tinyrick::deps(doc);
   tinyrick::deps(clippy);
 }
 
-/// Compile project
-fn build() {
-  tinyrick_extras::build();
-}
-
-/// Generate documentation
-fn doc() {
-  tinyrick_extras::doc();
-}
-
-/// Install applications
-fn install_binaries() {
+/// Install binaries
+fn install() {
   tinyrick_extras::install_binaries();
 }
 
-/// Install artifacts
-fn install() {
-  tinyrick::deps(install_binaries);
-}
-
-/// Uninstall artifacts
+/// Uninstall binaries
 fn uninstall() {
-  tinyrick_extras::uninstall();
+  tinyrick_extras::uninstall_binaries();
 }
 
-/// Run unit tests
-fn unit_test() {
-  tinyrick_extras::unit_test();
-}
-
-/// Run integration tests
-fn integration_test() {
+/// Doc, lint, and run tests
+fn test() {
+  tinyrick::deps(lint);
   tinyrick::deps(install);
+
+  tinyrick_extras::unit_test();
 
   tinyrick::exec!("ios7crypt", &["-e", "monkey"]);
   assert!(tinyrick::exec_stdout_utf8!("ios7crypt", &["-d", "060b002f474b10"]) == "monkey\n");
   assert!(!tinyrick::exec_status!("ios7crypt").success());
 }
 
-/// Run all tests
-fn test() {
-  tinyrick::deps(unit_test);
-  tinyrick::deps(integration_test);
+/// Doc, lint, test, and compile
+fn build() {
+  tinyrick::deps(test);
+  tinyrick_extras::build();
 }
 
 /// Generate and archive ports
@@ -78,7 +64,7 @@ fn port() {
     }
   }
 
-  let archive_path : &str = &format!("{}-{}.zip", PROJECT, VERSION);
+  let archive_path : &str = &format!("{}-{}.zip", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"));
 
   let zip_file : fs::File = fs::File::create(archive_path).unwrap();
 
@@ -118,31 +104,27 @@ fn clean_archives() {
   }
 }
 
-/// Run cargo clean
-fn clean_cargo() {
-  tinyrick_extras::clean_cargo();
-}
-
 /// Clean workspaces
 fn clean() {
   tinyrick::deps(clean_archives);
-  tinyrick::deps(clean_cargo);
+  tinyrick_extras::clean_cargo();
 }
 
-tinyrick::wubba_lubba_dub_dub!(
-  test;
-  clippy,
-  lint,
-  build,
-  doc,
-  install_binaries,
-  install,
-  uninstall,
-  unit_test,
-  integration_test,
-  port,
-  publish,
-  clean_archives,
-  clean_cargo,
-  clean
-);
+/// CLI entrypoint
+fn main() {
+  tinyrick::phony!(clean);
+
+  tinyrick::wubba_lubba_dub_dub!(
+    build;
+    doc,
+    clippy,
+    lint,
+    install,
+    uninstall,
+    test,
+    port,
+    publish,
+    clean_archives,
+    clean
+  );
+}
