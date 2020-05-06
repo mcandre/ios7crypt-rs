@@ -60,7 +60,7 @@ fn port() {
 
     for architecture in architectures {
         for libc in libcs {
-            tinyrick::exec!("sh", &["crosscompile-linux.sh", architecture, libc]);
+            tinyrick::exec!("sh", &["crosscompile-linux", architecture, libc]);
         }
     }
 

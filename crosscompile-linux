@@ -1,5 +1,7 @@
 #!/bin/bash
 set -euo pipefail
+IFS="$(printf '%b_' '\n\t ')"
+IFS="${IFS%_}"
 
 usage() {
     echo "Usage: $0 <arch> <libc>\n"
