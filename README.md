@@ -1,5 +1,9 @@
 # ios7crypt-rs: IOS7Crypt in Rust
 
+# DEPRECATED
+
+See [swiper](https://github.com/mcandre/swiper).
+
 # EXAMPLES
 
 ```console
